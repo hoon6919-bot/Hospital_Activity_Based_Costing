@@ -1,0 +1,75 @@
+.tableContainer {
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--spacing-4);
+}
+
+.table th {
+    text-align: left;
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-bg-base);
+}
+
+.table td {
+    padding: var(--spacing-2) var(--spacing-4);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.input {
+    width: 100%;
+    padding: var(--spacing-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    transition: border-color 0.2s;
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+.actionCol {
+    width: 48px;
+    text-align: center;
+}
+
+.deleteBtn {
+    color: var(--color-text-secondary);
+    padding: var(--spacing-1);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.deleteBtn:hover {
+    color: var(--color-danger);
+    background-color: #fee2e2;
+}
+
+.addBtn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    color: var(--color-primary);
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-md);
+    transition: background-color 0.2s;
+}
+
+.addBtn:hover {
+    background-color: rgba(26, 54, 93, 0.05);
+}

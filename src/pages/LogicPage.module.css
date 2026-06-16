@@ -1,0 +1,238 @@
+.container {
+    padding: var(--spacing-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.titleSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.subtitle {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Tab Styles - Matching AllocationValuePage */
+.tabContainer {
+    display: flex;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-2);
+}
+
+.tabButton {
+    padding: 8px 24px;
+    border: none;
+    background: none;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.tabButton.active {
+    background: white;
+    color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.descriptionBox {
+    background: var(--color-bg-paper);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-4);
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.card {
+    background: var(--color-bg-paper);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.tableWrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table th {
+    background: var(--color-bg-subtle);
+    padding: 12px 10px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--color-border);
+    white-space: nowrap;
+    text-align: center;
+}
+
+.highlightHeader {
+    color: var(--color-primary);
+    background-color: rgba(26, 54, 93, 0.05) !important;
+}
+
+.table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.875rem;
+    vertical-align: middle;
+}
+
+.table tr:hover {
+    background: var(--color-bg-subtle);
+}
+
+/* Inputs & Selects - Crucial for matching */
+.inputField,
+.selectField {
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 4px 6px;
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    transition: all 0.2s;
+}
+
+.inputField:focus,
+.selectField:focus {
+    border-color: var(--color-primary);
+    background: var(--color-bg-paper);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.1);
+}
+
+.inputField:disabled,
+.selectField:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.saveButton {
+    background: var(--color-primary);
+    color: white;
+    padding: var(--spacing-2) var(--spacing-6);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    transition: all 0.2s;
+    font-size: 0.875rem;
+}
+
+.saveButton:hover:not(:disabled) {
+    opacity: 0.9;
+    box-shadow: var(--shadow-md);
+}
+
+.saveButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.footerActions {
+    padding: var(--spacing-4);
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-bg-subtle);
+    gap: var(--spacing-3);
+}
+
+/* Matrix Table Specifics (Activity Ratio) */
+.matrixTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.matrixTable th {
+    background: var(--color-bg-subtle);
+    border-bottom: 2px solid var(--color-border);
+    padding: 12px 10px;
+    text-align: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.matrixTable td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.875rem;
+}
+
+.matrixInput {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #E2E8F0;
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    text-align: right;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.matrixInput:focus {
+    border-color: var(--color-primary);
+    background: white;
+    box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.1);
+}
+
+.matrixInputActive {
+    background-color: #FFFBEB;
+}
+
+.statusOk {
+    color: var(--color-success);
+}
+
+.statusError {
+    color: var(--color-error);
+}
+
+.rightAligned {
+    text-align: right;
+}

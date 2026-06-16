@@ -1,0 +1,250 @@
+.container {
+    padding: var(--spacing-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.titleSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.subtitle {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.descriptionBox {
+    background: var(--color-bg-paper);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-4);
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.aiButton {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    color: white;
+    padding: var(--spacing-2) var(--spacing-6);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-md);
+}
+
+.aiButton:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    filter: brightness(1.1);
+}
+
+.card {
+    background: var(--color-bg-paper);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.tableWrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table th {
+    background: var(--color-bg-subtle);
+    padding: 8px 10px;
+    font-size: 0.875rem;
+    /* 기존 0.75rem에서 확대 */
+    font-weight: 700;
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--color-border);
+    white-space: nowrap;
+    text-align: center;
+    /* 헤더 중앙 정렬 */
+}
+
+/* Matching the yellow headers in the user's image with a premium twist */
+.table th.highlight {
+    background: rgba(255, 215, 0, 0.1);
+    color: #B8860B;
+    /* Darker golden color for readability */
+}
+
+.table td {
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.875rem;
+    vertical-align: middle;
+}
+
+.table tr:hover {
+    background: var(--color-bg-subtle);
+}
+
+.input {
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 4px 6px;
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    transition: all 0.2s;
+}
+
+.input:focus {
+    border-color: var(--color-primary);
+    background: var(--color-bg-paper);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.1);
+}
+
+.select {
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 4px 6px;
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    cursor: pointer;
+}
+
+.select:focus {
+    border-color: var(--color-primary);
+    outline: none;
+}
+
+.numberInput {
+    text-align: right;
+    font-family: inherit;
+}
+
+.centerInput {
+    text-align: center;
+    font-family: inherit;
+}
+
+.centerText {
+    text-align: center;
+}
+
+.readonly {
+    background: var(--color-bg-subtle);
+    color: var(--color-text-secondary);
+    text-align: right;
+    font-weight: 600;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: var(--spacing-4);
+}
+
+.addButton {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+    background: var(--color-bg-paper);
+    border: 1px dashed var(--color-border);
+    color: var(--color-primary);
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.addButton:hover {
+    background: var(--color-bg-subtle);
+    border-color: var(--color-primary);
+}
+
+.deleteBtn {
+    color: var(--color-error);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-1);
+    border-radius: var(--radius-sm);
+    opacity: 0.6;
+    transition: all 0.2s;
+}
+
+.deleteBtn:hover {
+    opacity: 1;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.saveButton {
+    background: var(--color-primary);
+    color: white;
+    padding: var(--spacing-2) var(--spacing-6);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    transition: all 0.2s;
+}
+
+
+.totalRow td {
+    font-weight: 700 !important;
+    color: var(--color-text-primary);
+    background-color: #F1F5F9 !important;
+    border-top: 2px solid var(--color-border);
+}
+
+.deleteSelectedBtn {
+    background: var(--color-primary);
+    color: white;
+    padding: var(--spacing-2) var(--spacing-6);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    transition: all 0.2s;
+}
+
+.deleteSelectedBtn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}

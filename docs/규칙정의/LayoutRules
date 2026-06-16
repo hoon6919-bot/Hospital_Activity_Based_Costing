@@ -1,0 +1,183 @@
+# 병원 활동원가계산 - 화면 레이아웃 규칙
+
+## 1. 페이지 전체 구조
+
+모든 페이지는 아래 순서로 구성됩니다:
+
+```
+┌─────────────────────────────────────────┐
+│  ① 헤더 (header)                         │
+│     - 제목 (h2)                          │
+│     - 탭 버튼 (있는 경우)                  │
+├─────────────────────────────────────────┤
+│  ② 화면 소개 영역 (ui-subtitle-box)       │
+│     - 해당 화면의 설명 텍스트               │
+│     - margin: 8px 0 16px 0              │
+├─────────────────────────────────────────┤
+│  ③ 데이터 카드 (card)                     │
+│  ┌──────────────────────────────────┐    │
+│  │ 액션바 (추가/저장/다운로드 버튼)     │    │
+│  ├──────────────────────────────────┤    │
+│  │ 테이블 또는 데이터 영역             │    │
+│  └──────────────────────────────────┘    │
+└─────────────────────────────────────────┘
+```
+
+---
+
+## 2. 헤더 영역 (`header`)
+
+- CSS 클래스: `styles.header`
+- 내부 구성:
+  - `styles.titleSection` > `h2.styles.title` — 페이지 제목
+  - `ui-tab-container` — 탭이 있는 경우 (기초코드, 수익, 비용, 원가배부값 등)
+
+```jsx
+<header className={styles.header}>
+    <div className={styles.titleSection}>
+        <h2 className={styles.title}>페이지 제목</h2>
+    </div>
+    {/* 탭이 있는 경우 */}
+    <div className="ui-tab-container">
+        <button className={`ui-tab-button ${activeTab === 'xxx' ? 'active' : ''}`}>
+            탭 이름
+        </button>
+    </div>
+</header>
+```
+
+---
+
+## 3. 화면 소개 영역 (`ui-subtitle-box`)
+
+- 글로벌 CSS 클래스: `ui-subtitle-box`
+- 스타일:
+  - `background: #f8fafc`
+  - `border: 1px solid #e2e8f0`
+  - `border-radius: 8px`
+  - `padding: 12px 16px`
+  - `color: #475569`
+  - `font-size: 0.875rem`
+  - **`margin: 8px 0 16px 0`** ← 데이터 영역과의 간격
+
+```jsx
+<div className="ui-subtitle-box">
+    화면 설명 텍스트<br />
+    - 상세 안내 1<br />
+    - 상세 안내 2
+</div>
+```
+
+---
+
+## 4. 데이터 카드 영역 (`card`)
+
+### 4-1. 카드 컨테이너
+- CSS 클래스: `styles.card`
+- 카드 단위로 테이블/데이터를 감싸는 컨테이너
+
+### 4-2. 액션바 (버튼 영역)
+- 카드 최상단에 위치
+- 인라인 스타일 (통일 규격):
+
+```jsx
+<div className={styles.actions} style={{
+    padding: '16px 20px',
+    borderBottom: '1px solid #f1f5f9',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: '8px',
+    background: '#f8fafc'
+}}>
+```
+
+### 4-3. 버튼 순서 및 클래스
+
+| 순서 | 버튼 | CSS 클래스 | 아이콘 |
+|------|------|-----------|--------|
+| 1 | 추가 | `ui-btn-secondary` | `<Plus size={16} />` |
+| 2 | 저장 | `ui-btn-primary` | `<Save size={16} />` |
+| 3 | 다운로드 | `ui-btn-secondary` | `<FileDown size={16} />` |
+| 4 | 삭제 (선택사항) | `ui-btn-danger` | `<Trash2 size={16} />` |
+
+```jsx
+<button className="ui-btn-secondary"><Plus size={16} /> 추가</button>
+<button className="ui-btn-primary"><Save size={16} /> 저장</button>
+<button className="ui-btn-secondary"><FileDown size={16} /> 다운로드</button>
+```
+
+> [!IMPORTANT]
+> - 삭제 버튼은 **행 단위 삭제**인 경우 테이블 각 행 마지막 열에 `ui-btn-danger`로 배치
+> - **선택 삭제**인 경우 (체크박스 기반) 액션바 맨 끝에 `ui-btn-danger`로 배치
+
+### 4-4. 행 삭제 버튼 (테이블 내부)
+
+```jsx
+<td style={{ textAlign: 'center' }}>
+    <button className="ui-btn-danger" title="삭제">
+        <Trash2 size={16} />
+    </button>
+</td>
+```
+
+---
+
+## 5. 테이블 (`ui-table`)
+
+- 글로벌 CSS 클래스: `ui-table`
+- `styles.tableWrapper`로 감싸서 스크롤 처리
+- 헤더: `background: #f1f5f9`, `font-weight: 700`, `text-align: center`
+- 셀: `padding: 8px 10px`, `border-bottom: 1px solid #e2e8f0`
+- hover: `background: #f8fafc`
+
+---
+
+## 6. 탭 시스템
+
+- 컨테이너: `ui-tab-container`
+  - `background: #f1f5f9`, `padding: 4px`, `border-radius: 8px`
+- 버튼: `ui-tab-button`
+  - 활성: `.active` → `background: white`, `color: #1e293b`
+  - 비활성: `background: none`, `color: #64748b`
+
+---
+
+## 7. 버튼 스타일 요약
+
+| 클래스 | 용도 | 배경 | 텍스트 |
+|--------|------|------|--------|
+| `ui-btn-primary` | 저장, 주요 액션 | `#1e293b` (짙은 남색) | 흰색 |
+| `ui-btn-secondary` | 추가, 다운로드 | 흰색 (`border: #e2e8f0`) | `#475569` |
+| `ui-btn-danger` | 삭제 | 투명 | `#ef4444` (빨간색) |
+
+> 모든 버튼: `font-size: 0.875rem`, `font-weight: 600`, `border-radius: 6px`, `padding: 8px 16px`
+
+---
+
+## 8. 색상 체계
+
+| 용도 | 색상 코드 | 사용처 |
+|------|----------|--------|
+| 카드/액션바 배경 | `#f8fafc` | 액션바, subtitle-box |
+| 테이블 헤더 배경 | `#f1f5f9` | th, 탭 컨테이너 |
+| 보더 | `#e2e8f0` | 카드 구분선, 테이블 |
+| 강조 보더 | `#f1f5f9` | 액션바 하단 구분선 |
+| 주 텍스트 | `#334155` | 테이블 헤더 |
+| 보조 텍스트 | `#475569` | 설명, secondary 버튼 |
+| 비활성 텍스트 | `#64748b` | 탭 비활성 |
+
+---
+
+## 9. 페이지별 적용 현황
+
+| 페이지 | 탭 유무 | 액션바 | 비고 |
+|--------|---------|--------|------|
+| 홈 (Dashboard) | ✗ | ✗ | Step 버튼 + 결과 미리보기 |
+| 기초코드 (Setup) | ✓ 2탭 | ✓ | 부서정의 / 표준코드 |
+| 사원소속 (Labor) | ✗ | ✓ | 추가/저장/다운로드 |
+| 수익 (Revenue) | ✓ 2탭 | ✓ | 입력 / 요약 |
+| 비용 (Cost) | ✓ 2탭 | ✓ | 입력 / 요약 |
+| 환자통계 (PatientStats) | - | ✓ | - |
+| 원가배부값 (Allocation) | ✓ 3탭 | ✓ | 정의 / 요약 / 결과 |
+| 계산로직 (Logic) | - | ✓ | - |
+| 결과 (Result) | - | ✓ | - |

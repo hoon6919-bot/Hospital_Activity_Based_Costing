@@ -1,0 +1,189 @@
+.page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-8) var(--spacing-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+    min-height: calc(100vh - 64px);
+    /* Full height minus header */
+}
+
+.headerSection {
+    text-align: center;
+    margin-bottom: var(--spacing-6);
+    animation: fadeIn 0.5s ease-out;
+}
+
+.mainTitle {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-3);
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subTitle {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+.contentRow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    /* Responsive grid */
+    gap: var(--spacing-8);
+}
+
+.sectionCard {
+    background: var(--color-bg-paper);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.sectionCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.cardHeader {
+    background: linear-gradient(to right, var(--color-primary), var(--color-primary-light));
+    color: white;
+    padding: var(--spacing-4) var(--spacing-6);
+    font-size: 1.125rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.cardBody {
+    padding: var(--spacing-6);
+    flex: 1;
+    background-color: var(--color-bg-base);
+    /* Slight contrast for content area */
+}
+
+/* Procedure Flow Styles */
+.procedureContainer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+}
+
+.procedureRow {
+    display: flex;
+    gap: var(--spacing-4);
+    justify-content: center;
+}
+
+.procButton {
+    flex: 1;
+    background-color: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-4);
+    text-align: center;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    min-height: 100px;
+}
+
+.procButton:hover {
+    border-color: var(--color-secondary);
+    color: var(--color-primary);
+    background-color: #F0FDF4;
+    /* Light emerald tint */
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stepNumber {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    background-color: var(--color-bg-base);
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-bottom: 4px;
+}
+
+/* Result Table Styles */
+.tableWrapper {
+    background-color: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+}
+
+.resultTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+}
+
+.resultTable th {
+    background-color: #F8FAFC;
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    padding: var(--spacing-3) var(--spacing-4);
+    text-align: right;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.resultTable th:first-child {
+    text-align: left;
+}
+
+.resultTable td {
+    padding: var(--spacing-3) var(--spacing-4);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    text-align: right;
+}
+
+.resultTable td:first-child {
+    text-align: left;
+    font-weight: 500;
+}
+
+.resultTable tr:last-child td {
+    border-bottom: none;
+}
+
+.totalRow td {
+    background-color: #F0F9FF;
+    /* Light blue tint */
+    font-weight: 700;
+    color: var(--color-primary);
+    border-top: 2px solid var(--color-primary-light);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

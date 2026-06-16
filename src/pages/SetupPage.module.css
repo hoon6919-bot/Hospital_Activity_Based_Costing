@@ -1,0 +1,359 @@
+.container {
+    padding: var(--spacing-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.titleSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.subtitle {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.descriptionBox {
+    background: var(--color-bg-paper);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-4);
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Tabs */
+.tabContainer {
+    display: flex;
+    gap: var(--spacing-1);
+    background: var(--color-bg-subtle);
+    padding: var(--spacing-1);
+    border-radius: var(--radius-lg);
+    align-self: flex-start;
+}
+
+.tabButton {
+    padding: var(--spacing-2) var(--spacing-6);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+}
+
+.tabButton.active {
+    background: var(--color-bg-paper);
+    color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.card {
+    background: var(--color-bg-paper);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.summaryTitle {
+    font-weight: 700;
+    color: var(--color-text-primary);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.tableWrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table th {
+    background: var(--color-bg-subtle);
+    padding: 8px 10px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--color-border);
+    white-space: nowrap;
+    text-align: center;
+}
+
+.table th.highlight {
+    background: rgba(255, 215, 0, 0.1);
+    color: #B8860B;
+}
+
+.table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.875rem;
+    vertical-align: middle;
+}
+
+.table tr:hover {
+    background: var(--color-bg-subtle);
+}
+
+/* Inputs */
+.cellInput {
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 4px 6px;
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    transition: all 0.2s;
+}
+
+.cellInput:focus {
+    border-color: var(--color-primary);
+    background: var(--color-bg-paper);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.1);
+}
+
+/* Actions */
+.actionRow {
+    display: flex;
+    justify-content: flex-end;
+    padding: var(--spacing-4);
+    gap: var(--spacing-2);
+}
+
+.addBtn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+    background: var(--color-bg-paper);
+    border: 1px dashed var(--color-border);
+    color: var(--color-primary);
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.addBtn:hover {
+    background: var(--color-bg-subtle);
+    border-color: var(--color-primary);
+}
+
+.saveBtn {
+    background: var(--color-primary);
+    color: white;
+    padding: var(--spacing-2) var(--spacing-6);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    transition: all 0.2s;
+}
+
+.delBtn {
+    color: var(--color-error);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-1);
+    border-radius: var(--radius-sm);
+    opacity: 0.6;
+    transition: all 0.2s;
+}
+
+.delBtn:hover {
+    opacity: 1;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Standard Grid */
+.standardGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-6);
+}
+
+.readOnlyTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.readOnlyTable th, .readOnlyTable td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.875rem;
+    text-align: left;
+}
+
+.readOnlyTable th {
+    background: var(--color-bg-subtle);
+    font-weight: 600;
+}
+
+/* Model Definition */
+.modelForm {
+    display: flex;
+    padding: 20px;
+    gap: 16px;
+    background: white;
+    align-items: center;
+}
+
+.modelField {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.modelLabel {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+.modelInput {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #1e293b;
+    background: white;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.modelInput:focus {
+    border-color: #3b82f6;
+}
+
+/* Error Box */
+.errorBox {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #ef4444;
+    padding: 12px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.errorMore {
+    background: #fee2e2;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: #b91c1c;
+}
+
+/* Layout */
+.deptLayout {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+/* Tree UI */
+.treeContainer {
+    padding: 16px 0;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.treeEmpty {
+    padding: 20px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.875rem;
+}
+
+.treeNode {
+    display: flex;
+    align-items: center;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    user-select: none;
+}
+
+.treeNode:hover {
+    background: #f8fafc;
+}
+
+.treeToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    margin-right: 4px;
+}
+
+.treeName {
+    font-size: 0.875rem;
+    color: #1e293b;
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+.treeBadges {
+    display: flex;
+    gap: 4px;
+}
+
+.badgeDept, .badgeCostObj {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.badgeDept {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.badgeCostObj {
+    background: #fdf4ff;
+    color: #a21caf;
+}

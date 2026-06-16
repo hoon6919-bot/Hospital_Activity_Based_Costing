@@ -1,0 +1,19 @@
+\uFEFF레이어,영역,이름,하위폴더/파일,기능,비고
+Layer 2,프론트,src/,pages/,사용자가 보는 전체 화면 (수익/비용 등),
+Layer 2,프론트,src/,components/,버튼/헤더/표 등 여러 화면에서 공통으로 쓰는 부품,
+Layer 2,프론트,src/,core/,4단계 배부 계산을 수행하는 핵심 알고리즘 함수,
+Layer 2,프론트,src/,hooks/,DB 데이터를 가져오고 화면 상태를 관리하는 함수,
+Layer 2,프론트,src/,utils/,숫자 콤마 찍기/날짜 변환 등 편의성 도구,
+Layer 2,프론트,src/,styles/,메인 테마 색상/폰트 스타일 등 전체 디자인 정의,
+Layer 2,프론트,src/,assets/,코드 내에서 불러와 쓰는 아이콘/로고 이미지 등,
+Layer 2,프론트,dist/,assets/,개발 완료 후 빌드(압축)된 JS/CSS 파일 모음,상용화 배포 시 사용
+Layer 2,프론트,dist/,index.html,빌드(압축)된 최종 웹페이지 진입점,
+Layer 2,프론트,dist/,vite.svg,빌드(압축)된 정적 아이콘 이미지,
+Layer 2,프론트,public/,vite.svg,파비콘 등 브라우저가 직접 접근하는 원본 정적 자원,
+Layer 2,프론트,node_modules/,-,다운로드한 수백 개의 외부 라이브러리 폴더들,절대 직접 수정 금지
+Layer 2,백엔드,server/,index.js,프론트엔드의 요청(저장/조회)을 최초로 받는 API 서버 입구,
+Layer 2,백엔드,server/,db.js,SQLite DB와 연결하여 테이블을 만들고 쿼리를 날리는 관리자,
+Layer 2,백엔드,server/,package.json,백엔드 폴더 전용 라이브러리 설정 파일,
+Layer 2,DB,data/,database.sqlite,모든 원천 데이터가 최종 저장되는 단일 로컬 금고 파일,
+Layer 2,공통,docs/,*.csv 및 *.xlsx,원장님의 원가계산 기획 원본 데이터 보관함,최근에 청소하며 정리됨
+Layer 2,공통,scripts/,-,화면 캡처 등 개발을 돕기 위해 작성된 자동화 스크립트 모음,

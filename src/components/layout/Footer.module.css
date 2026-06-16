@@ -1,0 +1,44 @@
+.footer {
+    padding: var(--spacing-4) var(--spacing-6);
+    background-color: var(--color-bg-paper);
+    border-top: 1px solid var(--color-border);
+    margin-top: auto;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.socialProof {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    color: var(--color-primary);
+    font-weight: 500;
+    background-color: rgba(16, 185, 129, 0.1);
+    padding: var(--spacing-1) var(--spacing-3);
+    border-radius: 999px;
+}
+
+.pulse {
+    color: var(--color-secondary);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

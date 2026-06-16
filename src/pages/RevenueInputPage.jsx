@@ -1,0 +1,623 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useMemo, useEffect, useRef, useContext } from 'react';
+import { Plus, Trash2, Save, FileBarChart, Edit3, FileDown, Upload, FileSpreadsheet } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import styles from './RevenueInputPage.module.css';
+import { api } from '../api';
+import { exportToExcel, importFromExcel } from '../utils/excelExport';
+import { PeriodContext } from '../contexts/PeriodContext';
+
+const RevenueInputPage = () => {
+    const { currentPeriod, isPeriodLoading } = useContext(PeriodContext);
+    
+    const [activeTab, setActiveTab] = useState('input');
+    const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+    const fileInputRef = useRef(null);
+
+    const [availableDepts, setAvailableDepts] = useState([]);
+    const [costObjectDepts, setCostObjectDepts] = useState([]);
+    const [standardAccounts, setStandardAccounts] = useState([]);
+    const [revenueData, setRevenueData] = useState([]);
+
+    const uniqueAccountCategories = useMemo(() => {
+        return [...new Set(standardAccounts.map(a => a.account_type).filter(Boolean))];
+    }, [standardAccounts]);
+
+    useEffect(() => {
+        if (isPeriodLoading || !currentPeriod) return;
+
+        const loadData = async () => {
+
+            try {
+                const [savedDepts, savedCostObjs, savedAccounts, savedRevenue] = await Promise.all([
+                    api.getDepartments(),
+                    api.getCostObject(),
+                    api.getStandardAccounts(),
+                    api.getRevenueData(currentPeriod.period_year, currentPeriod.period_name)
+                ]);
+
+                if (savedDepts && Array.isArray(savedDepts) && savedDepts.length > 0) {
+                    setAvailableDepts(savedDepts.map(d => d.name));
+                } else {
+                    setAvailableDepts(['정형외과', '외래검사실', '영상의학과', '물리치료실', '정형1', '정형2', '정형3', '정형4']);
+                }
+
+                if (savedCostObjs && Array.isArray(savedCostObjs) && savedCostObjs.length > 0) {
+                    setCostObjectDepts(savedCostObjs.map(co => co.name));
+                } else {
+                    setCostObjectDepts(['정형외과', '외래검사실', '영상의학과', '물리치료실', '정형1', '정형2', '정형3', '정형4']);
+                }
+
+                if (savedAccounts && Array.isArray(savedAccounts) && savedAccounts.length > 0) {
+                    setStandardAccounts(savedAccounts);
+                } else {
+                    // Fallback if no master data is uploaded
+                    setStandardAccounts([
+                        { id: 'a1', account_type: '의료수익', account_name: '외래수익' },
+                        { id: 'a2', account_type: '의료수익', account_name: '입원수익' },
+                        { id: 'a3', account_type: '의료비용', account_name: '인건비' },
+                        { id: 'a4', account_type: '의료비용', account_name: '재료비' },
+                        { id: 'a5', account_type: '의료비용', account_name: '상각비' },
+                        { id: 'a6', account_type: '의료비용', account_name: '관리비' },
+                        { id: 'a7', account_type: '의료외수익', account_name: '의료외수익' },
+                        { id: 'a8', account_type: '의료외비용', account_name: '의료외비용' }
+                    ]);
+                }
+
+                if (savedRevenue && savedRevenue.length > 0) {
+                    setRevenueData(savedRevenue.map((r, i) => ({ ...r, id: i + 1 })));
+                } else {
+                    setRevenueData([
+                        { id: 1, abc_order_dept: '정형외과', abc_oper_dept: '정형외과', abc_order_dct: '의사1', abc_oper_dct: '의사1', patient_in_out: '외래', suga_category: '행위', account_category: '의료수익', account_name: '외래수익', amount: 5600000, patient_reg_no: '', patient_visit_no: '', suga_code: '', suga_name: '', order_date: '', admi_date: '', disc_date: '', note: '' }
+                    ]);
+                }
+            } catch (err) {
+                console.error("Failed to load revenue data", err);
+            } finally {
+
+            }
+        };
+
+        loadData();
+    }, [currentPeriod, isPeriodLoading]);
+
+    const handleSave = async () => {
+        try {
+            const dataToSave = revenueData.map(row => ({
+                period_year: currentPeriod?.period_year,
+                period_type: currentPeriod?.period_type,
+                period_name: currentPeriod?.period_name,
+                abc_order_dept: row.abc_order_dept,
+                abc_oper_dept: row.abc_oper_dept,
+                abc_order_dct: row.abc_order_dct,
+                abc_oper_dct: row.abc_oper_dct,
+                patient_in_out: row.patient_in_out,
+                suga_category: row.suga_category,
+                patient_reg_no: row.patient_reg_no,
+                patient_no: row.patient_no,
+                suga_code: row.suga_code,
+                suga_name: row.suga_name,
+                order_date: row.order_date,
+                registration_date: row.registration_date,
+                discharge_date: row.discharge_date,
+                account_category: row.account_category,
+                account_name: row.account_name,
+                amount: row.amount,
+                note: row.note
+            }));
+            await api.saveRevenueData(currentPeriod?.period_year, currentPeriod?.period_name, dataToSave);
+            alert(`[${currentPeriod?.period_year}년 ${currentPeriod?.period_name}] 수익 데이터가 저장되었습니다.`);
+        } catch(e) {
+            alert('저장에 실패했습니다.');
+            console.error(e);
+        }
+    };
+
+    const downloadTemplate = () => {
+        const templateData = [{
+            '진료과': '정형외과', '시행과': '정형외과', '처방의사': '의사1', '시행의사': '의사1',
+            '환자구분': '외래', '행위재료': '행위', '환자등록번호': '', '환자내원번호': '',
+            '수가코드': '', '수가명': '', '처방일자': '', '입원일자': '', '퇴원일자': '',
+            '계정분류': '의료수익', '계정명': '외래수익', '금액': 0, '비고': ''
+        }];
+        exportToExcel(templateData, '수익_업로드양식');
+    };
+
+    const handleFileUpload = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        try {
+            const data = await importFromExcel(file);
+            if (data && data.length > 0) {
+                const invalidValues = [];
+                const mappedData = data.map((row, idx) => {
+                    const order_dept = row.abc_order_dept || row.진료과 || costObjectDepts[0] || '정형외과';
+                    const oper_dept = row.abc_oper_dept || row.performDept || row.시행과 || costObjectDepts[0] || '정형외과';
+                    const order_dct = row.abc_order_dct || row.prescDoc || row.treatDoc || row.처방의사 || '';
+                    const oper_dct = row.abc_oper_dct || row.performDoc || row.시행의사 || '';
+                    const acc_cat = row.account_category || row.accCategory || row.category || row.계정분류 || '의료수익';
+                    const acc_name = row.account_name || row.account || row.계정명 || '외래수익';
+
+                    if (order_dept && !costObjectDepts.includes(order_dept)) invalidValues.push(order_dept);
+                    if (oper_dept && !costObjectDepts.includes(oper_dept)) invalidValues.push(oper_dept);
+                    if (order_dct && !costObjectDepts.includes(order_dct)) invalidValues.push(order_dct);
+                    if (oper_dct && !costObjectDepts.includes(oper_dct)) invalidValues.push(oper_dct);
+                    
+                    const isAccNameValid = standardAccounts.some(acc => acc.account_name === acc_name);
+                    if (acc_name && !isAccNameValid) invalidValues.push(acc_name);
+
+                    return {
+                        id: Date.now() + idx,
+                        abc_order_dept: order_dept,
+                        abc_oper_dept: oper_dept,
+                        abc_order_dct: order_dct,
+                        abc_oper_dct: oper_dct,
+                        patient_in_out: row.patient_in_out || row.patientType || row.환자구분 || '외래',
+                        suga_category: row.suga_category || row.actMaterial || row.행위재료 || '행위',
+                        patient_reg_no: row.patient_reg_no || row.환자등록번호 || '',
+                        patient_no: row.patient_no || row.환자내원번호 || row.내원번호 || '',
+                        suga_code: row.suga_code || row.수가코드 || '',
+                        suga_name: row.suga_name || row.수가명 || '',
+                        order_date: row.order_date || row.처방일자 || '',
+                        registration_date: row.registration_date || row.입원일자 || row.입원일 || '',
+                        discharge_date: row.discharge_date || row.퇴원일자 || row.퇴원일 || '',
+                        account_category: acc_cat,
+                        account_name: acc_name,
+                        amount: Number(row.amount || row.금액 || row.총금액 || 0),
+                        note: row.note || row.비고 || ''
+                    };
+                });
+
+                if (invalidValues.length > 0) {
+                    const uniqueInvalids = [...new Set(invalidValues)].join(', ');
+                    alert(`사용할 수 없는 원가대상/부서/계정 등 코드입니다 (${uniqueInvalids})`);
+                    if (fileInputRef.current) fileInputRef.current.value = '';
+                    return;
+                }
+
+                setRevenueData(mappedData);
+                alert(`선택된 기간(${currentPeriod?.period_year}년 ${currentPeriod?.period_name})에 ${mappedData.length}건의 데이터를 성공적으로 불러왔습니다.\n[저장] 버튼을 눌러야 반영됩니다.`);
+            } else {
+                alert("불러올 데이터가 없습니다. 양식을 확인해주세요.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("파일을 읽는 중 오류가 발생했습니다.");
+        } finally {
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    };
+
+    const handleAddRow = () => {
+        const newRow = {
+            id: Date.now(),
+            abc_order_dept: costObjectDepts[0] || '정형외과',
+            abc_oper_dept: availableDepts[0] || '정형외과',
+            abc_order_dct: costObjectDepts[0] || '의사1',
+            abc_oper_dct: costObjectDepts[0] || '의사1',
+            patient_in_out: '외래',
+            suga_category: '행위',
+            patient_reg_no: '', patient_no: '',
+            suga_code: '', suga_name: '', order_date: '', registration_date: '', discharge_date: '',
+            account_category: '의료수익',
+            account_name: '외래수익',
+            amount: 0,
+            note: ''
+        };
+        setRevenueData([newRow, ...revenueData]);
+    };
+
+    const removeRow = (id) => {
+        setRevenueData(revenueData.filter(d => d.id !== id));
+    };
+
+    const updateRow = (id, field, value) => {
+        setRevenueData(revenueData.map(row =>
+            row.id === id ? { ...row, [field]: value } : row
+        ));
+    };
+
+    const summaries = useMemo(() => {
+        const aggregateBy = (field) => {
+            const map = {};
+            revenueData.forEach(row => {
+                const key = row[field] || '미지정';
+                map[key] = (map[key] || 0) + parseFloat(row.amount || 0);
+            });
+            const total = Object.values(map).reduce((a, b) => a + b, 0);
+            return {
+                data: Object.entries(map).map(([name, value]) => ({
+                    name,
+                    value,
+                    ratio: total > 0 ? (value / total * 100) : 0
+                })).sort((a, b) => b.value - a.value),
+                total
+            };
+        };
+
+        return {
+            actMaterial: aggregateBy('suga_category'),
+            patientType: aggregateBy('patient_in_out'),
+            dept: aggregateBy('abc_order_dept'),
+            performDept: aggregateBy('abc_oper_dept'),
+            prescDoc: aggregateBy('abc_order_dct'),
+            performDoc: aggregateBy('abc_oper_dct')
+        };
+    }, [revenueData]);
+
+    const renderOptions = (currentValue, list) => {
+        const options = list.map(d => <option key={d} value={d}>{d}</option>);
+        if (currentValue && !list.includes(currentValue)) {
+            options.unshift(<option key={currentValue} value={currentValue}>{currentValue}</option>);
+        }
+        return options;
+    };
+
+    return (
+        <div className={styles.container}>
+            <header className={styles.header}>
+                <div className={styles.titleSection}>
+                    <h2 className={styles.title}>수익</h2>
+                </div>
+                <div className="ui-tab-container">
+                    <button className={`ui-tab-button ${activeTab === 'input' ? 'active' : ''}`} onClick={() => setActiveTab('input')}>수익 데이터 입력</button>
+                    <button className={`ui-tab-button ${activeTab === 'summary' ? 'active' : ''}`} onClick={() => setActiveTab('summary')}>수익 데이터 요약</button>
+                </div>
+            </header>
+
+            <div className="ui-subtitle-box">
+                수익 데이터 및 원가 분석을 위한 기초 정보를 입력합니다.<br />
+                {activeTab === 'input' && (
+                    <>- 4관점 원가대상, 환자구분, 행위재료, 계정별 수익을 입력합니다.</>
+                )}
+            </div>
+
+            {activeTab === 'input' ? (
+                <>
+                    <div className={styles.card}>
+                        <div className={styles.actions} style={{ padding: '16px 20px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'flex-end', gap: '8px', background: '#f8fafc' }}>
+                            <button className="ui-btn-secondary" onClick={handleAddRow}>
+                                <Plus size={16} /> 추가
+                            </button>
+                            <button className="ui-btn-primary" onClick={handleSave}>
+                                <Save size={16} /> 저장
+                            </button>
+                            <button className="ui-btn-secondary" onClick={() => setIsDownloadModalOpen(true)}>
+                                <FileDown size={16} /> 다운로드
+                            </button>
+                            <button className="ui-btn-secondary" onClick={() => fileInputRef.current?.click()}>
+                                <Upload size={16} /> 업로드
+                            </button>
+                            <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".xlsx, .xls" style={{ display: 'none' }} />
+                        </div>
+                        <div className={styles.tableWrapper}>
+                            <table className="ui-table">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: '40px' }}>No</th>
+                                        <th className={styles.highlight} style={{ width: '120px' }}>진료과</th>
+                                        <th className={styles.highlight} style={{ width: '120px' }}>시행과</th>
+                                        <th className={styles.highlight} style={{ width: '100px' }}>처방의사</th>
+                                        <th className={styles.highlight} style={{ width: '100px' }}>시행의사</th>
+                                        <th className={styles.highlight} style={{ width: '100px' }}>환자구분</th>
+                                        <th className={styles.highlight} style={{ width: '100px' }}>행위재료</th>
+                                        <th className={styles.highlight} style={{ width: '120px' }}>계정분류</th>
+                                        <th className={styles.highlight} style={{ width: '120px' }}>계정명</th>
+                                        <th className={styles.highlight} style={{ width: '140px' }}>금액</th>
+                                        <th className={styles.highlight} style={{ width: '150px' }}>비고</th>
+                                        <th style={{ width: '40px' }}></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {revenueData.map((row, index) => (
+                                        <tr key={row.id}>
+                                            <td className={styles.centerText}>{index + 1}</td>
+                                            <td>
+                                                <select className={styles.select} value={row.abc_order_dept} onChange={(e) => updateRow(row.id, 'abc_order_dept', e.target.value)}>
+                                                    {renderOptions(row.abc_order_dept, costObjectDepts)}
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select className={styles.select} value={row.abc_oper_dept} onChange={(e) => updateRow(row.id, 'abc_oper_dept', e.target.value)}>
+                                                    {renderOptions(row.abc_oper_dept, costObjectDepts)}
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select className={styles.select} value={row.abc_order_dct} onChange={(e) => updateRow(row.id, 'abc_order_dct', e.target.value)}>
+                                                    {renderOptions(row.abc_order_dct, costObjectDepts)}
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select className={styles.select} value={row.abc_oper_dct} onChange={(e) => updateRow(row.id, 'abc_oper_dct', e.target.value)}>
+                                                    {renderOptions(row.abc_oper_dct, costObjectDepts)}
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select className={styles.select} value={row.patient_type} onChange={(e) => updateRow(row.id, 'patient_type', e.target.value)}>
+                                                    <option value="입원">입원</option>
+                                                    <option value="외래">외래</option>
+                                                    <option value="기타">기타</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select className={styles.select} value={row.suga_category} onChange={(e) => updateRow(row.id, 'suga_category', e.target.value)}>
+                                                    <option value="행위">행위</option>
+                                                    <option value="재료">재료</option>
+                                                    <option value="기타">기타</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select className={styles.select} value={row.account_category} onChange={(e) => updateRow(row.id, 'account_category', e.target.value)}>
+                                                    <option value="">분류 선택</option>
+                                                    {uniqueAccountCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select className={styles.select} value={row.account_name} onChange={(e) => {
+                                                    const selectedAcc = standardAccounts.find(a => a.account_name === e.target.value);
+                                                    setRevenueData(revenueData.map(r => 
+                                                        r.id === row.id ? { ...r, account_name: e.target.value, account_category: selectedAcc?.account_type || r.account_category } : r
+                                                    ));
+                                                }}>
+                                                    <option value="">계정 선택</option>
+                                                    {standardAccounts
+                                                        .filter(acc => !row.account_category || acc.account_type === row.account_category)
+                                                        .map(acc => <option key={acc.id} value={acc.account_name}>{acc.account_name}</option>)}
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input
+                                                    className={`${styles.input} ${styles.numberInput}`}
+                                                    type="text"
+                                                    value={(row.amount || 0).toLocaleString()}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value.replace(/[^0-9]/g, '');
+                                                        updateRow(row.id, 'amount', parseInt(val) || 0);
+                                                    }}
+                                                />
+                                            </td>
+                                            <td><input className={styles.input} type="text" value={row.note || ''} onChange={(e) => updateRow(row.id, 'note', e.target.value)} /></td>
+                                            <td>
+                                                <button className="ui-btn-danger" title="삭제" onClick={() => removeRow(row.id)}><Trash2 size={16} /></button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                                <tfoot>
+                                    <tr className={styles.totalRow}>
+                                        <td colSpan="9" style={{ textAlign: 'center' }}>총합계</td>
+                                        <td style={{ textAlign: 'right' }}>
+                                            {revenueData.reduce((sum, row) => sum + (parseFloat(row.amount) || 0), 0).toLocaleString()}
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                    </div>
+                </>
+            ) : (
+                <div className={styles.summaryContainer}>
+                    <div className={styles.summaryRowTop}>
+                        {/* 행위/재료 수익 */}
+                        <div className={styles.summaryCard}>
+                            <div className={styles.summaryTitle}>행위/재료 수익</div>
+                            <div className={styles.cardContentWithChart}>
+                                <div className={styles.chartWrapper}>
+                                    <ResponsiveContainer width="100%" height={200}>
+                                        <PieChart>
+                                            <Pie 
+                                                data={summaries.actMaterial.data} 
+                                                cx="50%" 
+                                                cy="50%" 
+                                                innerRadius={60} 
+                                                outerRadius={80} 
+                                                paddingAngle={5} 
+                                                dataKey="value"
+                                            >
+                                                {summaries.actMaterial.data.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={index === 0 ? '#10B981' : '#1A365D'} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip formatter={(value) => value.toLocaleString() + '원'} />
+                                            <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle">
+                                                <tspan x="50%" dy="-0.5em" fontSize="18" fontWeight="700">
+                                                    {summaries.actMaterial.data.length > 0 ? `${summaries.actMaterial.data[0].ratio.toFixed(0)}%` : '0%'}
+                                                </tspan>
+                                                <tspan x="50%" dy="1.5em" fontSize="12" fill="#64748B">
+                                                    {summaries.actMaterial.data.length > 0 ? `${summaries.actMaterial.data[0].name}수익` : ''}
+                                                </tspan>
+                                            </text>
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div className={styles.tableWrapperShort}>
+                                    <table className="ui-table">
+                                        <thead>
+                                            <tr>
+                                                <th>행위/재료</th>
+                                                <th className={styles.rightText}>수익</th>
+                                                <th className={styles.centerText}>비율</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {summaries.actMaterial.data.map(item => (
+                                                <tr key={item.name}>
+                                                    <td>{item.name}</td>
+                                                    <td className={styles.rightText}>{item.value.toLocaleString()}</td>
+                                                    <td className={styles.centerText}>{item.ratio.toFixed(0)}%</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr className={styles.totalRow}>
+                                                <td>총합계</td>
+                                                <td className={styles.rightText}>{summaries.actMaterial.total.toLocaleString()}</td>
+                                                <td className={styles.centerText}>100%</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 외래/입원 수익 */}
+                        <div className={styles.summaryCard}>
+                            <div className={styles.summaryTitle}>외래/입원 수익</div>
+                            <div className={styles.cardContentWithChart}>
+                                <div className={styles.chartWrapper}>
+                                    <ResponsiveContainer width="100%" height={200}>
+                                        <PieChart>
+                                            <Pie 
+                                                data={summaries.patientType.data} 
+                                                cx="50%" 
+                                                cy="50%" 
+                                                innerRadius={60} 
+                                                outerRadius={80} 
+                                                paddingAngle={5} 
+                                                dataKey="value"
+                                            >
+                                                {summaries.patientType.data.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={index === 0 ? '#3B82F6' : '#10B981'} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip formatter={(value) => value.toLocaleString() + '원'} />
+                                            <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle">
+                                                <tspan x="50%" dy="-0.5em" fontSize="18" fontWeight="700">
+                                                    {summaries.patientType.data.length > 0 ? `${summaries.patientType.data[0].ratio.toFixed(0)}%` : '0%'}
+                                                </tspan>
+                                                <tspan x="50%" dy="1.5em" fontSize="12" fill="#64748B">
+                                                    {summaries.patientType.data.length > 0 ? `${summaries.patientType.data[0].name}수익` : ''}
+                                                </tspan>
+                                            </text>
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div className={styles.tableWrapperShort}>
+                                    <table className="ui-table">
+                                        <thead>
+                                            <tr>
+                                                <th>환자구분</th>
+                                                <th className={styles.rightText}>수익</th>
+                                                <th className={styles.centerText}>비율</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {summaries.patientType.data.map(item => (
+                                                <tr key={item.name}>
+                                                    <td>{item.name}</td>
+                                                    <td className={styles.rightText}>{item.value.toLocaleString()}</td>
+                                                    <td className={styles.centerText}>{item.ratio.toFixed(0)}%</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr className={styles.totalRow}>
+                                                <td>총합계</td>
+                                                <td className={styles.rightText}>{summaries.patientType.total.toLocaleString()}</td>
+                                                <td className={styles.centerText}>100%</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={styles.summaryRowBottom}>
+                        {['dept', 'performDept', 'prescDoc', 'performDoc'].map(key => {
+                            const titleMap = { dept: '진료과', performDept: '시행과', prescDoc: '처방의사', performDoc: '시행의사' };
+                            const data = summaries[key];
+                            return (
+                                <div key={key} className={styles.summaryCard}>
+                                    <div className={styles.summaryTitle}>{titleMap[key]} 수익</div>
+                                    <div className={styles.tableWrapperShort}>
+                                        <table className="ui-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>{titleMap[key]}</th>
+                                                    <th className={styles.rightText}>수익</th>
+                                                    <th className={styles.centerText}>비율</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {data.data.map(item => (
+                                                    <tr key={item.name}>
+                                                        <td>{item.name}</td>
+                                                        <td className={styles.rightText}>{item.value.toLocaleString()}</td>
+                                                        <td className={styles.centerText}>{item.ratio.toFixed(0)}%</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                            <tfoot>
+                                                <tr className={styles.totalRow}>
+                                                    <td>총합계</td>
+                                                    <td className={styles.rightText}>{data.total.toLocaleString()}</td>
+                                                    <td className={styles.centerText}>100%</td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
+
+            {/* 다운로드 선택 모달 */}
+            {isDownloadModalOpen && (
+                <div style={{
+                    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                    backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}>
+                    <div style={{ background: 'white', padding: '24px', borderRadius: '12px', width: '320px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+                        <h3 style={{ margin: '0 0 16px 0', fontSize: '16px', fontWeight: 700, color: '#0f172a' }}>다운로드 선택</h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            <button
+                                onClick={() => {
+                                    downloadTemplate();
+                                    setIsDownloadModalOpen(false);
+                                }}
+                                style={{ padding: '12px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px', color: '#1e293b', fontWeight: 600 }}
+                            >
+                                <FileSpreadsheet size={18} color="#3b82f6" />
+                                <div>
+                                    <div style={{ fontSize: '14px' }}>업로드 양식 다운로드</div>
+                                    <div style={{ fontSize: '12px', color: '#64748b', fontWeight: 400, marginTop: '2px' }}>빈 엑셀 양식 포맷</div>
+                                </div>
+                            </button>
+                            <button
+                                onClick={() => {
+                                    exportToExcel(revenueData, '수익데이터_상세');
+                                    setIsDownloadModalOpen(false);
+                                }}
+                                style={{ padding: '12px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px', color: '#1e293b', fontWeight: 600 }}
+                            >
+                                <FileDown size={18} color="#10b981" />
+                                <div>
+                                    <div style={{ fontSize: '14px' }}>데이터 다운로드</div>
+                                    <div style={{ fontSize: '12px', color: '#64748b', fontWeight: 400, marginTop: '2px' }}>현재 입력된 데이터 전체</div>
+                                </div>
+                            </button>
+                        </div>
+                        <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
+                            <button
+                                onClick={() => setIsDownloadModalOpen(false)}
+                                style={{ padding: '8px 16px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#64748b', fontWeight: 600 }}
+                            >
+                                닫기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default RevenueInputPage;

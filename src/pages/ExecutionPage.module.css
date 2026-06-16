@@ -1,0 +1,291 @@
+.container {
+    padding: var(--spacing-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.titleSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+}
+
+.title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.subtitle {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+}
+
+.configCard {
+    background: var(--color-bg-paper);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    padding: var(--spacing-6);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-8);
+    box-shadow: var(--shadow-sm);
+}
+
+.configItem {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+}
+
+.configLabel {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.selectField {
+    padding: 10px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: #F8FAFC;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    min-width: 140px;
+    outline: none;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.selectField:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.1);
+}
+
+/* Steps Grid */
+.stepsGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--spacing-4);
+}
+
+.stepCard {
+    background: var(--color-bg-paper);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--spacing-4);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stepCard.active {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+}
+
+.stepCard.completed {
+    border-color: var(--color-success);
+    background: #F0FFF4;
+}
+
+.stepNumber {
+    width: 28px;
+    height: 28px;
+    background: var(--color-bg-subtle);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--color-text-secondary);
+    position: absolute;
+    top: 16px;
+    left: 16px;
+}
+
+.active .stepNumber {
+    background: var(--color-primary);
+    color: white;
+}
+
+.completed .stepNumber {
+    background: var(--color-success);
+    color: white;
+}
+
+.iconBox {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: #F1F5F9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
+    margin-top: var(--spacing-2);
+}
+
+.active .iconBox {
+    background: rgba(26, 54, 93, 0.1);
+    color: var(--color-primary);
+}
+
+.completed .iconBox {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-success);
+}
+
+.stepTitle {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.stepDesc {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+}
+
+/* Execution Center */
+.executionCenter {
+    background: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border);
+    padding: var(--spacing-10);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-8);
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+    min-height: 360px;
+}
+
+.progressCircle {
+    position: relative;
+    width: 140px;
+    height: 140px;
+}
+
+.runButton {
+    background: var(--color-primary);
+    color: white;
+    padding: 16px 48px;
+    border-radius: var(--radius-full);
+    font-size: 1.25rem;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 25px -5px rgba(26, 54, 93, 0.4);
+}
+
+.runButton:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 20px 30px -10px rgba(26, 54, 93, 0.5);
+}
+
+.runButton:disabled {
+    background: #CBD5E1;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.resultActions {
+    display: flex;
+    gap: var(--spacing-4);
+    animation: slideUp 0.5s ease-out;
+}
+
+.viewResultButton {
+    background: var(--color-success);
+    color: white;
+    padding: 14px 32px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.viewResultButton:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.loaderRing {
+    width: 100px;
+    height: 100px;
+    border: 8px solid #F1F5F9;
+    border-top: 8px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.statusSummary {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.statusHeadline {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-text-primary);
+}
+
+.statusSubline {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    max-width: 460px;
+}
+
+/* Animations */
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); }
+}
