@@ -105,15 +105,15 @@ app.post('/api/auth/register', async (req, res) => {
 
                 db.serialize(() => {
                     tablesToCopy.forEach(table => {
-                        db.all(`PRAGMA table_info(${table})`, (err, columns) => {
+                        db.all(`SELECT column_name as name FROM information_schema.columns WHERE table_name = '${table}'`, (err, columns) => {
                             if (err) return;
-                            const colNames = columns.filter(c => c.name !== 'id').map(c => c.name);
+                            const colNames = columns.filter(c => c.name !== 'id').map(c => `"${c.name}"`);
                             if (colNames.length === 0) return;
                             
                             const insertCols = colNames.join(', ');
-                            const selectCols = colNames.map(c => c === 'user_id' ? newUserId : c).join(', ');
+                            const selectCols = columns.filter(c => c.name !== 'id').map(c => c.name === 'user_id' ? newUserId : `"${c.name}"`).join(', ');
                             
-                            db.run(`INSERT INTO ${table} (${insertCols}) SELECT ${selectCols} FROM ${table} WHERE user_id = ${templateUserId}`);
+                            db.run(`INSERT INTO "${table}" (${insertCols}) SELECT ${selectCols} FROM "${table}" WHERE user_id = ${templateUserId} RETURNING *`);
                         });
                     });
                 });
